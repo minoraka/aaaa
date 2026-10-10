@@ -1,0 +1,24 @@
+{% extends 'users/base.html' %}
+{% block content %}
+<h1>{{ student.full_name|default:student.username }}</h1>
+{% if student.photo %}<img src="{{ student.photo.url }}" width="160" alt="">{% endif %}
+<ul>
+  <li>Билет: {{ student.student_id }}</li>
+  <li>Группа: {{ student.group.name|default:"—" }}, курс {{ student.course }}</li>
+  <li>Направление: {{ student.group.direction|default:"—" }}</li>
+  <li>Факультет: {{ student.group.direction.faculty.name|default:"—" }}</li>
+  <li>Год поступления: {{ student.admission_year }}</li>
+  <li>Форма: {{ student.get_education_form_display }}, {{ student.get_funding_display }}</li>
+  <li>Статус: {{ student.get_status_display }}</li>
+  <li>Дата рождения: {{ student.birth_date|date:"d.m.Y"|default:"—" }}</li>
+  <li>Пол: {{ student.gender|default:"—" }}</li>
+  <li>Телефон: {{ student.phone|default:"—" }}</li>
+  <li>Email: {{ student.email|default:"—" }}</li>
+  <li>Адрес: {{ student.address|default:"—" }}</li>
+</ul>
+{% if user.is_authenticated %}
+  <a href="{% url 'students:update' student.pk %}">Изменить</a> |
+  <a href="{% url 'students:delete' student.pk %}">Удалить</a>
+{% endif %}
+<p><a href="{% url 'students:list' %}">← К списку</a></p>
+{% endblock %}

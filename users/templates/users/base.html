@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Студенты{% endblock %}</title>
+  <style>
+    body { font-family: sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border-bottom: 1px solid #ddd; padding: .5rem; text-align: left; }
+    nav { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; }
+    .msg { background: #e6f4ea; padding: .5rem 1rem; margin-bottom: 1rem; }
+    .errorlist { color: #b00; }
+    form p { margin: .6rem 0; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="{% url 'students:list' %}">Студенты</a>
+    {% if user.is_authenticated %}
+      <a href="{% url 'students:create' %}">+ Добавить</a>
+      <span>{{ user.username }}</span>
+      <form method="post" action="{% url 'logout' %}" style="display:inline">
+        {% csrf_token %}<button>Выйти</button>
+      </form>
+    {% else %}
+      <a href="{% url 'login' %}">Войти</a>
+    {% endif %}
+  </nav>
+  {% for m in messages %}<div class="msg">{{ m }}</div>{% endfor %}
+  {% block content %}{% endblock %}
+</body>
+</html>

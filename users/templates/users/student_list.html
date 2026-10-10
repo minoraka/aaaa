@@ -1,0 +1,38 @@
+{% extends 'users/base.html' %}
+{% block content %}
+<h1>Студенты</h1>
+<form method="get">
+  <input name="q" value="{{ q }}" placeholder="Поиск по ФИО">
+  <select name="group">
+    <option value="">Все группы</option>
+    {% for g in groups %}
+      <option value="{{ g.pk }}" {% if g.pk|stringformat:"s" == current_group %}selected{% endif %}>{{ g.name }}</option>
+    {% endfor %}
+  </select>
+  <button>Найти</button>
+</form>
+<table>
+  <tr><th>ФИО</th><th>Группа</th><th>Курс</th><th>Статус</th><th></th></tr>
+  {% for s in students %}
+  <tr>
+    <td><a href="{{ s.get_absolute_url }}">{{ s.full_name|default:s.username }}</a></td>
+    <td>{{ s.group.name|default:"—" }}</td><td>{{ s.course }}</td><td>{{ s.get_status_display }}</td>
+    <td>
+      {% if user.is_authenticated %}
+        <a href="{% url 'students:update' s.pk %}">Изменить</a> |
+        <a href="{% url 'students:delete' s.pk %}">Удалить</a>
+      {% endif %}
+    </td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="5">Студенты не найдены</td></tr>
+  {% endfor %}
+</table>
+{% if is_paginated %}
+<p>
+  {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}&q={{ q|urlencode }}&group={{ current_group|urlencode }}">←</a>{% endif %}
+  {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+  {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}&q={{ q|urlencode }}&group={{ current_group|urlencode }}">→</a>{% endif %}
+</p>
+{% endif %}
+{% endblock %}
